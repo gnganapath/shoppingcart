@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Angular Cart Application</title>
+		<link rel="stylesheet" type="text/css" href="css/styles.css"></link>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"></link>	
+		<script src="lib/Angular/angular.min.js" type="text/javascript" ></script>	
+		<script src="js/ui-bootstrap-tpls-0.11.2.min.js" type="text/javascript"></script>  
+		<script src="js/ng1controllers.js" type="text/javascript" ></script>		
+	</head>
+	
+	<body ng-app="Kart">
+	<div ng-controller="MainController">
+		<header role="banner" id="top" class="navbar navbar-static-top bs-docs-nav">
+			<div class="container">
+				<div class="navbar-header">
+				<b class="title">The Shopping Cart </b><br>
+				</div>
+				<div  class="pull-right" >
+				<i class="icon-search"></i><input type="search"  class="input-medium search-query"  ng-model="search" placeholder="Search...">
+				<button class="btn btn-success " data-ng-click="openKart()"><img width="20"  src="img/cart.jpg"> View Item ( {{ kartItems.length }} )</button>
+				</div>
+			</div>
+		</header>
+		<div class="container">
+			<ul class="tablist">   <!-- Tab Navbar -->
+				<li ng-repeat="tab in tabs" ng-class="{active:isActiveTab(tab.url)}" ng-click="onClickTab(tab)">{{tab.title}}</li>
+			</ul>
+			
+			<div class="pull-right">
+				<ul>
+					<li>Filter By Price:
+						<select ng-model="filterItem.store" ng-options="item.name for item in filterOptions.stores"></select>
+					</li>
+					<li>Price  : 
+						<input type="radio" name="reverse" value='true' ng-model="reverse">High To Low                
+						<input type="radio" name="reverse" value='false' ng-model="reverse">Low To High                
+					</li>
+				</ul>
+			</div>				
+			<div id="mainView">
+				<div ng-include="currentTab"></div>
+			</div>			
+		</div>
+		<script type="text/ng-template" id="kart.html">
+			<div class="modal-header">
+				<h3 class="modal-title">Shopping Cart </h3><span ng-show="showContent"> Invoice Bill Number : {{random}}</span>
+			</div>
+			<div class="modal-body">
+			    <ul class="tablist">
+			    <table class="table table-hover table-striped">
+				   <thead>
+				   <tr><th></th>
+				   <th>Product</th>
+				   <th>Quantity</th>
+				   <th>Price</th>
+				   <th>TotalPrice</th></tr>
+				   </thead>
+				   <tbody><tr data-ng-repeat="item in kartitems">
+				   <td><img ng-src="img/{{item.image}}" alt="Some image" height="20"  /></td>
+				   <td>{{item.name}}</td>
+				   <td><input type="number" ng-disabled="showContent"   ng-model="item.qty"  min=1 max=99></td>			  
+				   <td>{{item.price|currency}}</td>
+				   <td>{{item.total=item.qty*item.price|currency}}</td>
+				   <td><button class="btn btn-danger" id="removeButton" ng-show="!showContent"  ng-click="remove( item.qty,$index )">Remove</button></td></tr></tbody>
+				</table>    
+			    <div class="row" ng-show="!showContent">			   
+					<div class="col-md-8">Total Number of Products:<b>{{totalQtyCount}}</b></div>
+					<div class="col-md-4">Total Price:<b>{{totalQtyPrice|currency}}</b></div>
+			    </div>			  
+			    <div class="row">
+				   <div class="col-md-8">Purchase Above $50 for 10% Discount </div>
+				   <div class="col-md-4">Payable Amount:<b>{{((totalQtyPrice>50)?totalQtyPrice-totalQtyPrice*10/100:totalQtyPrice)|currency}}</b></div>
+			    </div>
+			   </ul>				
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-success" ng-click="showContent=true" ng-show="!showContent">Continue To Payment</button>
+				<button class="btn btn-primary" ng-show="showContent" ng-click="Order()" id="alignMiddle"> Order Now </button>
+				<button class="btn btn-warning" ng-click="cancel()" ng-show="!showContent">Cancel</button>
+			</div>
+		</script>
+		
+		<script type="text/ng-template" id="men.html">
+		<div id="viewOne">
+			<ul class="item"> 			
+				
+			<li class="itemHolder" ng-repeat="item in  guitarVariable | filter: MenfilterFunction | filter:customFilter | filter:search | orderBy:sort:reverse" ng-animate="'animate'" >
+			<img width="100" height= "100" ng-src="img/{{item.image}}">
+			<div>	  
+			<p> <h3> {{item.name }}</h3></p> 
+			<p> Price : $ {{item.price}}
+			<button id="{{item.price }}"  ng-click="addKart(item)"  tooltip-placement="top" class="btn btn-info" tooltip="Like to Shopping"> Add to Cart</button>
+			</p>{{item.category }}
+			</div>
+			</li>		
+		</div>
+		</script>
+		
+		<script type="text/ng-template" id="women.html">
+			<div id="viewTwo">
+				<ul class="item"> 
+				<li class="itemHolder" ng-repeat="item in  guitarVariable | filter: WomenfilterFunction  | filter:customFilter | orderBy:sort:reverse | filter:search " ng-animate="'animate'">
+				<img ng-src="img/{{item.image}}">
+				<div>	 
+				<p> <h3> {{item.name }}</h3></p> 
+				<p> Price : $ {{item.price}}
+				<button id="{{item.price }}"  ng-click="addKart(item)" tooltip-placement="top" class="btn btn-info" tooltip="Like to Shopping">Add to Cart</button>
+				</p>{{item.category }}
+				</div>
+				</li>			
+			</div>
+		</script>
+			
+		<script type="text/ng-template" id="children.html">
+			<div id="viewThree">
+				<ul class="item"> 
+				<li class="itemHolder" ng-repeat="item in  guitarVariable | filter: ChildrenfilterFunction | filter:customFilter | orderBy:sort:reverse  | filter:search " ng-animate="'animate'"  >
+				<img ng-src="img/{{item.image}}">
+				<div>	 
+				<p> <h3> {{item.name }}</h3></p> 
+				<p> Price : $ {{item.price}}
+				<button id="{{item.price }}"  ng-click="addKart(item)" tooltip-placement="top" class="btn btn-info" tooltip="Like to Shopping">Add to Cart</button>
+				</p>{{item.category }}							
+				</div>
+				</li>
+			</div>
+		</script>
+	
+		<script type="text/ng-template" id="sports.html">
+			<div id="viewThree">
+				<ul class="item"> 
+				<li class="itemHolder" ng-repeat="item in  guitarVariable | filter: SportsfilterFunction | filter:customFilter |orderBy:sort:reverse | filter:search" ng-animate="'animate'"  >
+				<img ng-src="img/{{item.image}}">
+				<div>	 
+				<p> <h3> {{item.name }}</h3></p> 
+				<p> Price : $ {{item.price}}
+				<button id="{{item.price }}"  ng-click="addKart(item)" tooltip-placement="top" class="btn btn-info" tooltip="Like to Shopping">Add to Cart</button>
+				</p>{{item.category }}
+				</div>
+				</li>			
+			</div>
+		</script>			
+	</div>
+	</body>
+</html>

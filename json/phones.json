@@ -1,0 +1,31 @@
+
+    [
+            {
+                "id": 1,
+                "name": "Black Sunglasses",
+                "category": "Men Accessories",
+                "price": 20,
+                "image": "men/Allen-Solly-Aviator-Black-Sunglasses.jpeg"
+            }, 
+            {
+                "id": 2,
+                "name": "Risk red puma",
+                "category": "Children Accessories",
+                "price": 30,
+                "image": "Children/black-silver-high-risk-red-puma.jpeg"
+            }, 
+            {
+                "id": 3,
+                "name": "Shoulder bag",
+                "category": "Women Accessories",
+                "price": 5,
+                "image": "Women/hidesign-shoulder-bag-norah.jpeg"
+            }, 
+            {
+                "id": 4,
+                "name": "Fashion drop earring",
+                "category": "Sports Accessories",
+                "price": 20,
+                "image": "Sports/vendee-fashion-drop-earring.jpeg"
+            }
+        ]
